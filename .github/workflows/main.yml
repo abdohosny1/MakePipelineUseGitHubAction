@@ -32,9 +32,7 @@ jobs:
             exit 1
           fi
           publish_dir=$(realpath /tmp/publish)
-          echo "##vso[task.setvariable variable=PUBLISH_DIR;isOutput=true]$publish_dir"
-      
-
+          echo "Publish Directory: $publish_dir"
         
       - name: Deploy to SmarterASP.NET
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
@@ -43,4 +41,4 @@ jobs:
           username: 'makepiplin-001'
           password: 'Aa@12345'
           server-dir: '/www/makepipline/'  # Replace with your target directory on the server
-          local-dir: ${{ env.PUBLISH_DIR }} # Replace with the path to your published artifacts
+          local-dir: $publish_dir # Replace with the path to your published artifacts
