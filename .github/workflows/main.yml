@@ -25,20 +25,4 @@ jobs:
         run: dotnet build ./MakePipline.sln --configuration Release --no-restore
 
       - name: Publish
-        run: |
-          dotnet publish ./MakePipeline.sln --configuration Release --no-build --output /tmp/publish
-          if [ $? -ne 0 ]; then
-            echo "Error: dotnet publish command failed."
-            exit 1
-          fi
-          publish_dir=$(realpath /tmp/publish)
-          echo "Publish Directory: $publish_dir"
-        
-      - name: Deploy to SmarterASP.NET
-        uses: SamKirkland/FTP-Deploy-Action@3.1.1
-        with:
-          server: 'https://win5066.site4now.net:8172/MsDeploy.axd?site=makepiplin-001-site1'
-          username: 'makepiplin-001'
-          password: 'Aa@12345'
-          server-dir: '/www/makepipline/'  # Replace with your target directory on the server
-          local-dir: $publish_dir # Replace with the path to your published artifacts
+        run: dotnet publish -c Release /p:PublishProfile="Properties\PublishProfiles\makepiplin-001-site1 - Web Deploy.pubxml" /p:Password="Aa@12345" /p:ExcludeFoldersFromDeployment="wwwroot"
