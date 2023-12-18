@@ -17,7 +17,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 
-
+//Get Utc
 app.MapGet("tim/utc",() => Results.Ok(DateTime.UtcNow));
 
   app.Run();
