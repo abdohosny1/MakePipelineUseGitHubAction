@@ -28,13 +28,6 @@ jobs:
       - name: Publish
         run: |
           dotnet publish ./MakePipeline.sln --configuration Release --no-build --output /tmp/publish
-          if [ $? -ne 0 ]; then
-            echo "Error: dotnet publish command failed."
-            exit 1
-          fi
-          publish_dir=$(realpath /tmp/publish)
-          echo "##vso[task.setvariable variable=PUBLISH_DIR;isOutput=true]$publish_dir"
-
 
       - name: Display Publish Directory
         run: echo "Publish Directory: ${{ env.PUBLISH_DIR }}"
