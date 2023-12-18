@@ -1,4 +1,4 @@
-name: Publish
+name: Publish and Deploy
 
 on:
   workflow_dispatch:
@@ -11,10 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: setup.Net
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '6.0.x'
 
@@ -26,9 +27,17 @@ jobs:
 
       - name: Publish
         run: |
-          publish_dir=$(dotnet publish ./MakePipeline.sln --configuration Release --no-build --output /tmp/publish)
+          dotnet publish ./MakePipeline.sln --configuration Release --no-build --output /tmp/publish
+          if [ $? -ne 0 ]; then
+            echo "Error: dotnet publish command failed."
+            exit 1
+          fi
+          publish_dir=$(realpath /tmp/publish)
           echo "##vso[task.setvariable variable=PUBLISH_DIR;isOutput=true]$publish_dir"
-          
+
+      - name: Display Publish Directory
+        run: echo "Publish Directory: ${{ env.PUBLISH_DIR }}"
+
       - name: Deploy to SmarterASP.NET
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
