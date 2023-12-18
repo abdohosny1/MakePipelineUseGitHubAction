@@ -1,0 +1,28 @@
+name: Publish 
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: setup.Net
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version:'6.0.x'
+
+      - name: Restore
+        run: dotnet restore ./MakePipline.sln
+
+      - name: Build
+        run: dotnet build ./MakePipline.sln --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish ./MakePipline.sln --configuration Release --no-build
+ 
+
