@@ -1,11 +1,11 @@
-name: Publish 
+name: Publish  
 on:
   workflow_dispatch:
   push:
-    branches:
-    - main
+    Branch:
+    - master
 jobs:
-  publish:
+  Published:
     runs-on: ubuntu-latest
     
     steps:
