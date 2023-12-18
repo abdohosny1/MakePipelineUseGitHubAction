@@ -35,6 +35,7 @@ jobs:
           publish_dir=$(realpath /tmp/publish)
           echo "##vso[task.setvariable variable=PUBLISH_DIR;isOutput=true]$publish_dir"
 
+
       - name: Display Publish Directory
         run: echo "Publish Directory: ${{ env.PUBLISH_DIR }}"
 
