@@ -1,34 +1,33 @@
-name: Publish
-
+name: Publish And Deploy
+ 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - master
+    push:
+        branches:
+            - master
+ 
+jobs :
+    build :
+        runs-on : windows-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v2
+          - name: Setup MSBuild
+            uses: microsoft/setup-msbuild@v1.0.2
+ 
+          - name: Restore NuGet packages
+            run: dotnet restore
+ 
+          - name: Build and publish
+            run:  dotnet build -c Release --no-restore
 
-jobs:
-  Published:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: setup.Net
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-
-      - name: Restore
-        run: dotnet restore ./MakePipline.sln
-
-      - name: Build
-        run: dotnet build ./MakePipline.sln --configuration Release --no-restore
-        
-      - name: Checkout repository 
-        uses: actions/checkout@v2   
-        
-      - name: Restore dependencies 
-        run: dotnet restore
-        
-      - name: Publish
-        run: dotnet publish -c Release /p:PublishProfile="Properties\PublishProfiles\makepiplin-001-site1 - Web Deploy.pubxml" /p:Password="Aa@12345" /p:ExcludeFoldersFromDeployment="wwwroot"
+    deploy:
+      needs : build
+      runs-on: windows-latest
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2    
+        - name: Restore dependencies
+          run: dotnet restore
+        - name: Build and publish
+          run: |
+              dotnet publish -c Release /p:PublishProfile="Properties\PublishProfiles\makepiplin-001-site1 - Web Deploy.pubxml" /p:Password="Aa@12345" /p:ExcludeFoldersFromDeployment="wwwroot"
